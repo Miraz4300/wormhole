@@ -1,5 +1,7 @@
 # WORMHOLE
 
+![Screenshot](./Docs/WORMHOLE.png)
+
 Wormhole is a Docker container that runs the official [Cloudflare WARP](https://1.1.1.1/) client along with [NetBird](https://netbird.io/). This setup provides a secure and private connection to the internet, leveraging the benefits of both Cloudflare WARP and NetBird.
 
 ## Features
@@ -11,6 +13,7 @@ Wormhole is a Docker container that runs the official [Cloudflare WARP](https://
 - **Dockerized**: Simplified deployment and management using Docker.
 
 ## STATUS
+
 `version`: 0.1.0
 
 `development`: alpha
