@@ -65,6 +65,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            docker.io/wormhole:latest
-            docker.io/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
-            docker.io/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}-${{ github.sha }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}-${{ github.sha }}
