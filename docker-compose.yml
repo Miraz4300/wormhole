@@ -19,7 +19,6 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
       - wormhole-data:/var/lib/cloudflare-warp
-      - wormhole-data:/etc/netbird
 
 volumes:
   wormhole-data:

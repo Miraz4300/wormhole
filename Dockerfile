@@ -1,39 +1,37 @@
+# Ubuntu as the base image
 FROM ubuntu:22.04
 
+# Build arguments
 ARG WARP_VERSION
 ARG GOST_VERSION
 ARG COMMIT_SHA
 ARG TARGETPLATFORM
 
+# Metadata labels
 LABEL org.opencontainers.image.authors="miraz4300"
 LABEL org.opencontainers.image.url="https://github.com/miraz4300/wormhole"
 LABEL WARP_VERSION=${WARP_VERSION}
 LABEL GOST_VERSION=${GOST_VERSION}
 LABEL COMMIT_SHA=${COMMIT_SHA}
 
+# Copy scripts into the container
 COPY entrypoint.sh /entrypoint.sh
 COPY ./healthcheck /healthcheck
 
-# install dependencies
+# Install dependencies and Docker
 RUN case ${TARGETPLATFORM} in \
       "linux/amd64")   export ARCH="amd64" ;; \
       "linux/arm64")   export ARCH="armv8" ;; \
       *) echo "Unsupported TARGETPLATFORM: ${TARGETPLATFORM}" && exit 1 ;; \
     esac && \
-    echo "Building for ${ARCH} with GOST ${GOST_VERSION}" &&\
+    echo "Building for ${ARCH} with GOST ${GOST_VERSION}" && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y ca-certificates curl gnupg lsb-release sudo jq ipcalc && \
+    apt-get install -y curl gnupg lsb-release sudo jq ipcalc docker.io && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflare-client.list && \
     apt-get update && \
     apt-get install -y cloudflare-warp && \
-    apt-get clean && \
-    apt-get autoremove -y && \
-    curl -sSL https://pkgs.netbird.io/debian/public.key | gpg --yes --dearmor --output /usr/share/keyrings/netbird-archive-keyring.gpg && \
-    echo 'deb [signed-by=/usr/share/keyrings/netbird-archive-keyring.gpg] https://pkgs.netbird.io/debian stable main' | tee /etc/apt/sources.list.d/netbird.list && \
-    apt-get update && \
-    apt-get install -y netbird && \
     apt-get clean && \
     apt-get autoremove -y && \
     curl -LO https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost-linux-${ARCH}-${GOST_VERSION}.gz && \
@@ -45,16 +43,20 @@ RUN case ${TARGETPLATFORM} in \
     useradd -m -s /bin/bash warp && \
     echo "warp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/warp
 
+# Switch to the warp user
 USER warp
 
 # Accept Cloudflare WARP TOS
 RUN mkdir -p /home/warp/.local/share/warp && \
     echo -n 'yes' > /home/warp/.local/share/warp/accepted-tos.txt
 
+# Environment variables
 ENV GOST_ARGS="-L :1080"
 ENV WARP_SLEEP=2
 
+# Healthcheck command
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD /healthcheck/index.sh
 
+# Entry point script
 ENTRYPOINT ["/entrypoint.sh"]

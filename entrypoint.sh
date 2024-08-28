@@ -1,29 +1,28 @@
 #!/bin/bash
 
-# exit when any command fails
+# Exit when any command fails
 set -e
 
-# create a tun device
+# Create a tun  for WARP
 sudo mkdir -p /dev/net
 sudo mknod /dev/net/tun c 10 200
 sudo chmod 600 /dev/net/tun
 
-# start dbus
+# Start dbus service
 sudo mkdir -p /run/dbus
 if [ -f /run/dbus/pid ]; then
     sudo rm /run/dbus/pid
 fi
 sudo dbus-daemon --config-file=/usr/share/dbus-1/system.conf
 
-# start the daemon
+# Start the Cloudflare WARP service
 sudo warp-svc --accept-tos &
 
-# sleep to wait for the daemon to start, default 2 seconds
+# Sleep to wait for the WARP service to start
 sleep "$WARP_SLEEP"
 
-# if /var/lib/cloudflare-warp/reg.json not exists, setup new warp client
+# Check if WARP client is registered
 if [ ! -f /var/lib/cloudflare-warp/reg.json ]; then
-    # if /var/lib/cloudflare-warp/mdm.xml not exists, register the warp client
     if [ ! -f /var/lib/cloudflare-warp/mdm.xml ]; then
         warp-cli registration new && echo "Warp client registered!"
         # if a license key is provided, register the license
@@ -38,8 +37,19 @@ else
     echo "Warp client already registered, skip registration"
 fi
 
-# start netbird
-sudo netbird up --management-url "$NETBIRD_MGNT_URL" --setup-key "$NETBIRD_SETUP_KEY"
+# Start Docker service
+sudo service docker start
 
-# start the proxy
+# Wait for Docker to start
+sleep 2
+
+# Run inner Docker container with NetBird
+docker run -d --name netbird-container --network host \
+ --cap-add=NET_ADMIN \
+ -e NB_SETUP_KEY="$NETBIRD_SETUP_KEY" \
+ -v netbird-client:/etc/netbird \
+ -e NB_MANAGEMENT_URL="$NETBIRD_MGNT_URL" \
+ netbirdio/netbird:latest
+
+# Start the proxy
 gost $GOST_ARGS
