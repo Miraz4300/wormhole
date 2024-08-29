@@ -3,6 +3,15 @@
 # Exit when any command fails
 set -e
 
+# Remove any existing resolv.conf to avoid conflicts
+if [ -f /etc/resolv.conf ]; then
+    echo "Removing existing /etc/resolv.conf to avoid conflicts..."
+    sudo rm /etc/resolv.conf
+    echo "/etc/resolv.conf has been removed."
+else
+    echo "No existing /etc/resolv.conf found."
+fi
+
 # Create a tun for WARP
 echo "Creating tun for WARP..."
 sudo mkdir -p /dev/net
@@ -26,11 +35,6 @@ if [ -f /run/dbus/pid ]; then
 fi
 echo "Starting dbus service..."
 sudo dbus-daemon --config-file=/usr/share/dbus-1/system.conf
-
-# Add a comment line to /etc/resolv.conf to indicate management
-if ! grep -q "Managed by Cloudflare WARP" /etc/resolv.conf; then
-    echo "# Managed by Cloudflare WARP" >> /etc/resolv.conf
-fi
 
 # Start the Cloudflare WARP service
 echo "Starting WARP service..."
