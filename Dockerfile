@@ -17,8 +17,11 @@ LABEL COMMIT_SHA=${COMMIT_SHA}
 # Copy scripts into the container
 COPY entrypoint.sh /entrypoint.sh
 COPY ./healthcheck /healthcheck
+COPY modprobe start-docker.sh entrypoint-dind.sh /usr/local/bin/
+COPY supervisor/ /etc/supervisor/conf.d/
+COPY logger.sh /opt/bash-utils/logger.sh
 
-# Install dependencies
+# Install dependencies and set permissions
 RUN case ${TARGETPLATFORM} in \
       "linux/amd64")   export ARCH="amd64" ;; \
       "linux/arm64")   export ARCH="armv8" ;; \
@@ -42,6 +45,9 @@ RUN case ${TARGETPLATFORM} in \
     chmod +x /usr/bin/gost && \
     chmod +x /entrypoint.sh && \
     chmod +x /healthcheck/index.sh && \
+    chmod +x /usr/local/bin/start-docker.sh && \
+    chmod +x /usr/local/bin/entrypoint-dind.sh && \
+    chmod +x /usr/local/bin/modprobe && \
     useradd -m -s /bin/bash warp && \
     echo "warp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/warp
 
@@ -59,6 +65,9 @@ ENV DOCKER_CHANNEL=stable \
 	BUILDX_VERSION=v0.16.2 \
 	DEBUG=false
 
+# Switch to the root user
+USER root
+
 # Docker and buildx installation
 RUN set -eux; \
 	\
@@ -75,7 +84,7 @@ RUN set -eux; \
 		*) echo >&2 "error: unsupported architecture ($arch)"; exit 1 ;;\
 	esac; \
 	\
-	if ! sudo wget -O docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}.tgz"; then \
+	if ! wget -O docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}.tgz"; then \
 		echo >&2 "error: failed to download 'docker-${DOCKER_VERSION}' from '${DOCKER_CHANNEL}' for '${dockerArch}'"; \
 		exit 1; \
 	fi; \
@@ -86,7 +95,7 @@ RUN set -eux; \
 		--directory /usr/local/bin/ \
 	; \
 	rm docker.tgz; \
-	if ! sudo wget -O docker-buildx "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.${buildx_arch}"; then \
+	if ! wget -O docker-buildx "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.${buildx_arch}"; then \
 		echo >&2 "error: failed to download 'buildx-${BUILDX_VERSION}.${buildx_arch}'"; \
 		exit 1; \
 	fi; \
@@ -97,16 +106,6 @@ RUN set -eux; \
 	dockerd --version; \
 	docker --version; \
 	docker buildx version
-
-# Copy scripts and configuration files
-COPY modprobe start-docker.sh entrypoint-dind.sh /usr/local/bin/
-COPY supervisor/ /etc/supervisor/conf.d/
-COPY logger.sh /opt/bash-utils/logger.sh
-
-# Set permissions for scripts
-RUN chmod +x /usr/local/bin/start-docker.sh \
-	/usr/local/bin/entrypoint.sh \
-	/usr/local/bin/modprobe
 
 VOLUME /var/lib/docker
 
