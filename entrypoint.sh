@@ -37,12 +37,6 @@ else
     echo "Warp client already registered, skip registration"
 fi
 
-# Start Docker service
-sudo service docker start
-
-# Wait for Docker to start
-sleep 2
-
 # Run inner Docker container with NetBird
 docker run -d --name netbird-container --network host \
  --cap-add=NET_ADMIN \
