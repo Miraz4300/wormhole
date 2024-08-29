@@ -64,5 +64,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-           ${{ github.ref == 'refs/heads/main' && 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest' || 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:dev' }}
-           docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
