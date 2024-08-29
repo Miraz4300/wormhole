@@ -54,6 +54,10 @@ fi
 # Start the proxy
 gost $GOST_ARGS
 
+# Sleep to wait for proxy to start
+echo "Sleeping for 5 seconds..."
+sleep 5
+
 # Start Docker Daemon in the background
 echo "Starting Docker Daemon..."
 /usr/local/bin/start-docker.sh &

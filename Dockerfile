@@ -118,7 +118,6 @@ RUN ln -s /usr/local/bin/docker-compose /usr/local/lib/docker/cli-plugins/docker
 
 # Environment variables
 ENV GOST_ARGS="-L :1080"
-ENV WARP_SLEEP=2
 
 # Healthcheck command
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
