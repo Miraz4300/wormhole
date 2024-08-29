@@ -48,7 +48,7 @@ docker run -d --name netbird-container --network host \
  --cap-add=NET_ADMIN \
  -e NB_SETUP_KEY="$NETBIRD_SETUP_KEY" \
  -v netbird-client:/etc/netbird \
- -e NB_MANAGEMENT_URL="$NETBIRD_MGNT_URL" \
+ -e NB_MANAGEMENT_URL="$NETBIRD_MGMT_URL" \
  netbirdio/netbird:latest
 
 # Start the proxy

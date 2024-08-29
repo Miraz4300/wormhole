@@ -10,7 +10,7 @@ services:
     environment:
       - WARP_SLEEP=2
       #- WARP_LICENSE_KEY= # optional & required for warp+
-      - NETBIRD_MGNT_URL=
+      - NETBIRD_MGMT_URL=
       - NETBIRD_SETUP_KEY=
     cap_add:
       - NET_ADMIN

@@ -18,7 +18,14 @@ LABEL COMMIT_SHA=${COMMIT_SHA}
 COPY entrypoint.sh /entrypoint.sh
 COPY ./healthcheck /healthcheck
 
-# Install dependencies and Docker
+# Environment variables of the Docker image
+ENV DOCKER_CHANNEL=stable \
+	DOCKER_VERSION=27.1.2 \
+	DOCKER_COMPOSE_VERSION=v2.29.1 \
+	BUILDX_VERSION=v0.16.2 \
+	DEBUG=false
+
+# Install dependencies
 RUN case ${TARGETPLATFORM} in \
       "linux/amd64")   export ARCH="amd64" ;; \
       "linux/arm64")   export ARCH="armv8" ;; \
@@ -27,7 +34,8 @@ RUN case ${TARGETPLATFORM} in \
     echo "Building for ${ARCH} with GOST ${GOST_VERSION}" && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y curl gnupg lsb-release sudo jq ipcalc docker.io && \
+    apt-get install -y ca-certificates curl gnupg lsb-release sudo jq ipcalc && \
+    wget iptables supervisor && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflare-client.list && \
     apt-get update && \
