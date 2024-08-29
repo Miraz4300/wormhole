@@ -124,5 +124,5 @@ HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD /healthcheck/index.sh
 
 # Entry point script
-ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["bash"]
