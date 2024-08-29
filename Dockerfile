@@ -18,13 +18,6 @@ LABEL COMMIT_SHA=${COMMIT_SHA}
 COPY entrypoint.sh /entrypoint.sh
 COPY ./healthcheck /healthcheck
 
-# Environment variables of the Docker image
-ENV DOCKER_CHANNEL=stable \
-	DOCKER_VERSION=27.1.2 \
-	DOCKER_COMPOSE_VERSION=v2.29.1 \
-	BUILDX_VERSION=v0.16.2 \
-	DEBUG=false
-
 # Install dependencies
 RUN case ${TARGETPLATFORM} in \
       "linux/amd64")   export ARCH="amd64" ;; \
