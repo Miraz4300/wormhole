@@ -3,15 +3,6 @@
 # Exit when any command fails
 set -e
 
-# Remove any existing resolv.conf to avoid conflicts
-if [ -f /etc/resolv.conf ]; then
-    echo "Removing existing /etc/resolv.conf to avoid conflicts..."
-    sudo rm /etc/resolv.conf
-    echo "/etc/resolv.conf has been removed."
-else
-    echo "No existing /etc/resolv.conf found."
-fi
-
 # Create a tun for WARP
 echo "Creating tun for WARP..."
 sudo mkdir -p /dev/net
