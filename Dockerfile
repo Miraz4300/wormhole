@@ -27,7 +27,7 @@ RUN case ${TARGETPLATFORM} in \
     echo "Building for ${ARCH} with GOST ${GOST_VERSION}" && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y curl gnupg lsb-release sudo jq ipcalc && \
+    apt-get install -y ca-certificates curl gnupg lsb-release sudo jq ipcalc wget && \
     wget curl iptables supervisor && \
     rm -rf /var/lib/apt/list/* && \
     update-alternatives --set iptables /usr/sbin/iptables-legacy && \
