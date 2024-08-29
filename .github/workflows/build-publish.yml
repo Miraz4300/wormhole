@@ -67,4 +67,3 @@ jobs:
           tags: |
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest
             docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}-${{ github.sha }}

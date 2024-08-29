@@ -27,6 +27,11 @@ fi
 echo "Starting dbus service..."
 sudo dbus-daemon --config-file=/usr/share/dbus-1/system.conf
 
+# Add a comment line to /etc/resolv.conf to indicate management
+if ! grep -q "Managed by Cloudflare WARP" /etc/resolv.conf; then
+    echo "# Managed by Cloudflare WARP" >> /etc/resolv.conf
+fi
+
 # Start the Cloudflare WARP service
 echo "Starting WARP service..."
 sudo warp-svc --accept-tos &

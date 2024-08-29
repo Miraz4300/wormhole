@@ -18,7 +18,9 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
-      - wormhole-data:/var/lib/cloudflare-warp
+      - wormhole-warp:/var/lib/cloudflare-warp
+      - wormhole-netbird:/var/lib/docker
 
 volumes:
-  wormhole-data:
+  wormhole-warp:
+  wormhole-netbird:
