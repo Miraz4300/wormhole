@@ -17,7 +17,7 @@ LABEL COMMIT_SHA=${COMMIT_SHA}
 # Copy scripts into the container
 COPY entrypoint.sh /entrypoint.sh
 COPY ./healthcheck /healthcheck
-COPY modprobe start-docker.sh entrypoint-dind.sh /usr/local/bin/
+COPY modprobe start-docker.sh /usr/local/bin/
 COPY supervisor/ /etc/supervisor/conf.d/
 COPY logger.sh /opt/bash-utils/logger.sh
 
@@ -46,7 +46,6 @@ RUN case ${TARGETPLATFORM} in \
     chmod +x /entrypoint.sh && \
     chmod +x /healthcheck/index.sh && \
     chmod +x /usr/local/bin/start-docker.sh && \
-    chmod +x /usr/local/bin/entrypoint-dind.sh && \
     chmod +x /usr/local/bin/modprobe && \
     useradd -m -s /bin/bash warp && \
     echo "warp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/warp

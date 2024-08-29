@@ -3,6 +3,9 @@
 # Exit when any command fails
 set -e
 
+# Start Docker Daemon
+/usr/local/bin/start-docker.sh &
+
 # Create a tun  for WARP
 sudo mkdir -p /dev/net
 sudo mknod /dev/net/tun c 10 200
@@ -47,3 +50,6 @@ docker run -d --name netbird-container --network host \
 
 # Start the proxy
 gost $GOST_ARGS
+
+# Execute specified command
+"$@"
