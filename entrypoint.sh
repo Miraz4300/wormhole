@@ -6,12 +6,15 @@ set -e
 # Start Docker Daemon
 /usr/local/bin/start-docker.sh &
 
-sleep 60
+sleep 5
 
-# Create a tun  for WARP
+# Create a tun for WARP
 sudo mkdir -p /dev/net
-sudo mknod /dev/net/tun c 10 200
-sudo chmod 600 /dev/net/tun
+if [ ! -c /dev/net/tun ]; then
+    sudo mknod /dev/net/tun c 10 200
+    sudo chmod 600 /dev/net/tun
+fi
+
 
 # Start dbus service
 sudo mkdir -p /run/dbus
@@ -24,7 +27,7 @@ sudo dbus-daemon --config-file=/usr/share/dbus-1/system.conf
 sudo warp-svc --accept-tos &
 
 # Sleep to wait for the WARP service to start
-sleep "$WARP_SLEEP"
+sleep 5
 
 # Check if WARP client is registered
 if [ ! -f /var/lib/cloudflare-warp/reg.json ]; then

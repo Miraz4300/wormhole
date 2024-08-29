@@ -1,6 +1,11 @@
 #!/bin/bash
 source /opt/bash-utils/logger.sh
 
+if [ -f /var/run/dockerd_started.flag ]; then
+    INFO "Docker already started. Skipping startup."
+    exit 0
+fi
+
 function wait_for_process () {
     local max_time_wait=30
     local process_name="$1"
@@ -27,4 +32,5 @@ if [ $? -ne 0 ]; then
     exit 1
 else
     INFO "dockerd is running"
+    touch /var/run/dockerd_started.flag
 fi

@@ -9,7 +9,6 @@ services:
     ports:
       - '1080:1080'
     environment:
-      - WARP_SLEEP=2
       #- WARP_LICENSE_KEY= # optional & required for warp+
       - NETBIRD_MGMT_URL=
       - NETBIRD_SETUP_KEY=
