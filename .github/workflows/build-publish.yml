@@ -60,10 +60,9 @@ jobs:
           build-args: |
             GOST_VERSION=${{ steps.get-gost-version.outputs.GOST_VERSION }}
             WARP_VERSION=${{ steps.get-warp-client-version.outputs.WARP_VERSION }}
-            COMMIT_SHA=${{ github.sha }}
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
+           ${{ github.ref == 'refs/heads/main' && 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:latest' || 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:dev' }}
+           docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wormhole:${{ steps.get-warp-client-version.outputs.WARP_VERSION }}-${{ steps.get-gost-version.outputs.GOST_VERSION }}
