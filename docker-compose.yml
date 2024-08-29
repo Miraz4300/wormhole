@@ -4,6 +4,7 @@ services:
   wormhole:
     image: miraz4300/wormhole:latest
     container_name: wormhole
+    privileged: true
     restart: always
     ports:
       - '1080:1080'

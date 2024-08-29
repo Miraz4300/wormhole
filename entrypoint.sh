@@ -6,6 +6,8 @@ set -e
 # Start Docker Daemon
 /usr/local/bin/start-docker.sh &
 
+sleep 60
+
 # Create a tun  for WARP
 sudo mkdir -p /dev/net
 sudo mknod /dev/net/tun c 10 200
