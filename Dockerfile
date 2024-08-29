@@ -35,7 +35,9 @@ RUN case ${TARGETPLATFORM} in \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y ca-certificates curl gnupg lsb-release sudo jq ipcalc && \
-    wget iptables supervisor && \
+    wget curl iptables supervisor && \
+    && rm -rf /var/lib/apt/list/* && \
+    && update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflare-client.list && \
     apt-get update && \
