@@ -28,6 +28,9 @@ RUN case ${TARGETPLATFORM} in \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y curl gnupg lsb-release sudo jq ipcalc && \
+    wget curl iptables supervisor && \
+    rm -rf /var/lib/apt/list/* && \
+    update-alternatives --set iptables /usr/sbin/iptables-legacy && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflare-client.list && \
     apt-get update && \
@@ -50,13 +53,7 @@ USER warp
 RUN mkdir -p /home/warp/.local/share/warp && \
     echo -n 'yes' > /home/warp/.local/share/warp/accepted-tos.txt
 
-# Commands to install Docker
-RUN apt update \
-    && apt install -y ca-certificates \
-    wget curl iptables supervisor \
-    && rm -rf /var/lib/apt/list/* \
-    && update-alternatives --set iptables /usr/sbin/iptables-legacy
-
+# Environment variables for docker
 ENV DOCKER_CHANNEL=stable \
 	DOCKER_VERSION=27.1.2 \
 	DOCKER_COMPOSE_VERSION=v2.29.1 \
