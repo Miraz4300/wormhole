@@ -123,9 +123,6 @@ ENV GOST_ARGS="-L :1080"
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD /healthcheck/index.sh
 
-# Remove existing resolv.conf  
-RUN rm -f /etc/resolv.conf
-
 # Entry point script
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
